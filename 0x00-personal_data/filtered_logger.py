@@ -29,9 +29,8 @@ def filter_datum(fields: List[str], redaction: str,
         str: The log message with sensitive field values replaced
         by the redaction string.
     """
-    return re.sub(r'({})=[^{}]+'.format('|'.join(fields),
-                                        separator), r'\1=' + redaction,
-                  message)
+    return re.sub(r'(' + '|'.join([re.escape(field) for field in fields]) + r')=[^' + re.escape(separator) + r']+', 
+                  lambda m: m.group(0).split('=')[0] + '=' + redaction, message).replace(";", "; ")
 
 
 class RedactingFormatter(logging.Formatter):
@@ -66,6 +65,4 @@ class RedactingFormatter(logging.Formatter):
         Returns:
             str: The formatted log message with filtered field values.
         """
-        message = record.getMessage()
-        return filter_datum(self.fields, self.REDACTION,
-                            message, self.SEPARATOR)
+        return super(RedactingFormatter, self).format(record).replace(record.msg, filter_datum(self.fields, self.REDACTION, record.msg, self.SEPARATOR))
