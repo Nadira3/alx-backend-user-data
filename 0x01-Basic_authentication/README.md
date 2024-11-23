@@ -1,81 +1,42 @@
-# 0x01. Basic Authentication  
+# Simple API
 
-This project focuses on implementing basic authentication mechanisms for backend applications. It is part of the **ALX Backend User Data** curriculum and introduces the foundational concepts of securing APIs with authentication.  
+Simple HTTP API for playing with `User` model.
 
-## Learning Objectives  
-By completing this project, you will:  
-- Understand the purpose of authentication and how it works.  
-- Learn about Base64 encoding and how it is used in Basic Authentication.  
-- Implement Basic Authentication in a Python web framework.  
-- Validate user credentials securely.  
 
-## Technologies Used  
-- **Language:** Python  
-- **Framework:** Flask  
-- **Tools/Libraries:**  
-  - `base64` for encoding and decoding credentials.  
-  - `bcrypt` for secure password hashing.  
-  - `uuid` for generating unique user tokens.  
+## Files
 
-## Project Tasks  
-### 1. Simple API  
-- Implement a simple Flask application with public routes.  
+### `models/`
 
-### 2. Base64 Encode/Decode  
-- Write functions to encode and decode data using Base64.  
+- `base.py`: base of all models of the API - handle serialization to file
+- `user.py`: user model
 
-### 3. Basic Authentication Header  
-- Parse the `Authorization` header to extract the username and password.  
+### `api/v1`
 
-### 4. Validate Credentials  
-- Create a user model and validate credentials securely.  
+- `app.py`: entry point of the API
+- `views/index.py`: basic endpoints of the API: `/status` and `/stats`
+- `views/users.py`: all users endpoints
 
-### 5. Protect Routes  
-- Use the Basic Authentication mechanism to protect specific routes in your application.  
 
-### 6. User Management  
-- Add functionality to register and manage user accounts.  
+## Setup
 
-## Setup and Installation  
-To run this project locally:  
-
-1. Clone the repository:  
-   ```bash  
-   git clone https://github.com/PreciousAitanun/alx-backend-user-data.git  
-   cd 0x01-Basic_authentication
-   ```
-
-2. Set up a virtual environment and install dependencies:
 ```
-python3 -m venv venv  
-source venv/bin/activate  
-pip install -r requirements.txt
-```
-
-3. Run the application:
-```
-python3 app.py
+$ pip3 install -r requirements.txt
 ```
 
 
-## Usage
+## Run
 
-Use an API testing tool (like Postman) or curl to test the endpoints.
-
-Include the Authorization header in your requests in the format:
-
-Authorization: Basic <Base64-encoded credentials>
-
-Replace <Base64-encoded credentials> with a Base64-encoded string of username:password.
+```
+$ API_HOST=0.0.0.0 API_PORT=5000 python3 -m api.v1.app
+```
 
 
-## Example Request
+## Routes
 
-curl -X GET http://127.0.0.1:5000/protected -H "Authorization: Basic dXNlcm5hbWU6cGFzc3dvcmQ="
-
-License
-
-Developed as part of the ALX Software Engineering Program.
-
-
-
+- `GET /api/v1/status`: returns the status of the API
+- `GET /api/v1/stats`: returns some stats of the API
+- `GET /api/v1/users`: returns the list of users
+- `GET /api/v1/users/:id`: returns an user based on the ID
+- `DELETE /api/v1/users/:id`: deletes an user based on the ID
+- `POST /api/v1/users`: creates a new user (JSON parameters: `email`, `password`, `last_name` (optional) and `first_name` (optional))
+- `PUT /api/v1/users/:id`: updates an user based on the ID (JSON parameters: `last_name` and `first_name`)
