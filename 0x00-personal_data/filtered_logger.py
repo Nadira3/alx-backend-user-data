@@ -11,6 +11,9 @@ the values of specified fields in a given log message.
 import logging
 import re
 from typing import List, Tuple
+import os
+import mysql.connector
+from mysql.connector.connection import MySQLConnection
 
 PII_FIELDS: Tuple[str, ...] = ("name", "email", "phone", "ssn", "password")
 
@@ -79,3 +82,33 @@ def get_logger() -> logging.Logger:
     logger.addHandler(handler)
 
     return logger
+
+
+def get_db() -> MySQLConnection:
+    """
+    Returns a connector to the database.
+
+    Uses environment variables for database credentials:
+        - PERSONAL_DATA_DB_USERNAME (default: "root")
+        - PERSONAL_DATA_DB_PASSWORD (default: "")
+        - PERSONAL_DATA_DB_HOST (default: "localhost")
+        - PERSONAL_DATA_DB_NAME (no default, required)
+
+    Returns:
+        MySQLConnection: A connection to the database.
+    """
+    username = os.getenv("PERSONAL_DATA_DB_USERNAME", "root")
+    password = os.getenv("PERSONAL_DATA_DB_PASSWORD", "")
+    host = os.getenv("PERSONAL_DATA_DB_HOST", "localhost")
+    database = os.getenv("PERSONAL_DATA_DB_NAME")
+
+    if not database:
+        raise ValueError("Environment variable\
+                         PERSONAL_DATA_DB_NAME must be set.")
+
+    return mysql.connector.connect(
+        user=username,
+        password=password,
+        host=host,
+        database=database
+    )
