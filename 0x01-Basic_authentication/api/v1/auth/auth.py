@@ -8,7 +8,7 @@ from typing import List, TypeVar
 
 class Auth:
     """ Authentication class """
-    def require_auth(self, path: str, excluded_paths: list[str]) -> bool:
+    def require_auth(self, path: str, excluded_paths: List[str]) -> bool:
         """
         Determines if authentication is required for the given path.
         Supports wildcard patterns ('*') at the end of excluded paths.
