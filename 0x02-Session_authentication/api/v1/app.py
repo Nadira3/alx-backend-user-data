@@ -39,7 +39,6 @@ def before_request():
         request.current_user = auth.current_user(request)
 
 
-
 @app.errorhandler(401)
 def unauthorized(error):
     """ unauthorized handler
