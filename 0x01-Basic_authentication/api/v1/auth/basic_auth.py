@@ -37,16 +37,23 @@ class BasicAuth(Auth):
             return None
 
     def extract_user_credentials(
-            self, decoded_base64_authorization_header: str) -> (str, str):
+            self, decoded_base64_authorization_header: str):
         """
-        Extracts user email and password from Base64 decoded value
+        Extracts user credentials from the Base64-decoded
+        authorization header.
+        Returns the user email and password,
+        even if the password contains ':'.
         """
-        if decoded_base64_authorization_header is None or not\
-                isinstance(decoded_base64_authorization_header, str):
+        if not decoded_base64_authorization_header or not isinstance(
+                decoded_base64_authorization_header, str):
             return None, None
+
+        # Split at the first ':' only
         if ':' not in decoded_base64_authorization_header:
             return None, None
-        email, password = decoded_base64_authorization_header.split(':', 1)
+
+        email, password = decoded_base64_authorization_header.split(
+                ':', 1)
         return email, password
 
     def user_object_from_credentials(
@@ -65,3 +72,32 @@ class BasicAuth(Auth):
             return user[0]
         except Exception:
             return None
+
+    def current_user(self, request=None) -> TypeVar('User'):
+        """Retrieves the User instance for a request."""
+        # Retrieve the Authorization header from the request
+        auth_header = self.authorization_header(request)
+        if auth_header is None:
+            return None
+
+        # Extract the Base64 part of the Authorization header
+        base64_authorization = self.extract_base64_authorization_header(
+                auth_header)
+        if base64_authorization is None:
+            return None
+
+        # Decode the Base64 string to retrieve the credentials
+        decoded_base64 = self.decode_base64_authorization_header(
+                base64_authorization)
+        if decoded_base64 is None:
+            return None
+
+        # Extract the user credentials from the decoded string
+        user_email, user_pwd = self.extract_user_credentials(
+                decoded_base64)
+        if user_email is None or user_pwd is None:
+            return None
+
+        # Retrieve the User instance using the email and password
+        user = self.user_object_from_credentials(user_email, user_pwd)
+        return user
