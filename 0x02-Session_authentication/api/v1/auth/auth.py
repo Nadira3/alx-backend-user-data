@@ -2,6 +2,7 @@
 """
 Auth module for the API
 """
+import os
 from flask import request
 from typing import List, TypeVar
 
@@ -39,3 +40,24 @@ class Auth:
     def current_user(self, request=None) -> TypeVar('User'):
         """ current user """
         return None
+
+    def session_cookie(self, request=None):
+        """
+        Retrieves the session cookie value from a Flask request object.
+
+        Args:
+            request (Request): The Flask request object.
+
+        Returns:
+            str: The value of the session cookie, or None if not found.
+        """
+        if request is None:
+            return None
+
+        # Get the name of the session cookie from the environment variable
+        session_name = os.getenv("SESSION_NAME")
+        if session_name is None:
+            return None
+
+        # Retrieve the cookie value using .get()
+        return request.cookies.get(session_name)
