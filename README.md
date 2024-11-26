@@ -92,8 +92,7 @@ git push origin feature-branch
 5. Create a pull request.
 
 License
-
 This project is licensed under the ALX Backend Specialization curriculum
 
 ## Contact
-For any questions, please reach out to paitanun@gmail.com.
+For any questions, please reach out to paitanun@gmail.com
